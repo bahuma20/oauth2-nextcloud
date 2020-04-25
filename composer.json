@@ -11,5 +11,10 @@
             "email": "max.bachhuber@bahuma.io",
             "homepage": "https://bahuma.io"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bahuma\\OAuth2\\Client\\": "src/"
+        }
+    }
 }
