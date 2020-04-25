@@ -1,0 +1,15 @@
+{
+    "name": "bahuma/oauth2-nextcloud",
+    "description": "Nextcloud OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+    "require": {
+        "league/oauth2-client": "^2.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Max Bachhuber",
+            "email": "max.bachhuber@bahuma.io",
+            "homepage": "https://bahuma.io"
+        }
+    ]
+}
