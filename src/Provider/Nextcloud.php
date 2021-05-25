@@ -19,16 +19,17 @@ class Nextcloud extends AbstractProvider
 
   public function getBaseAuthorizationUrl()
   {
-    return $this->nextcloudUrl . '/apps/oauth2/authorize';
+    return $this->nextcloudUrl . '/index.php/apps/oauth2/authorize';
   }
 
   public function getBaseAccessTokenUrl(array $params)
   {
-    return $this->nextcloudUrl . '/apps/oauth2/api/v1/token';
+    return $this->nextcloudUrl . '/index.php/apps/oauth2/api/v1/token';
   }
 
   public function getResourceOwnerDetailsUrl(AccessToken $token)
   {
+    // index.php is not required on this path
     return $this->nextcloudUrl . '/ocs/v2.php/cloud/user?format=json';
   }
 

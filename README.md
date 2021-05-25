@@ -42,6 +42,8 @@ composer require bahuma/oauth2-nextcloud
 ```php
 use Bahuma\OAuth2\Client\Provider\Nextcloud;
 
+session_start();
+
 $provider = new Nextcloud([
     'clientId'     => '{nextcloud-client-id}',
     'clientSecret' => '{nextcloud-client-secret}',
@@ -79,10 +81,11 @@ if (!empty($_GET['error'])) {
     try {
 
         // We got an access token, let's now get the owner details
+        /** @var \Bahuma\OAuth2\Client\Provider\NextcloudResourceOwner $ownerDetails */
         $ownerDetails = $provider->getResourceOwner($token);
 
         // Use these details to create a new profile
-        printf('Hello %s!', $ownerDetails->getFirstName());
+        printf('Hello %s!', $ownerDetails->getEmail());
 
     } catch (Exception $e) {
 
