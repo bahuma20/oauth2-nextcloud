@@ -8,20 +8,20 @@ use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Bahuma\OAuth2\Client\Provider\NextcloudProvider;
+use Bahuma\OAuth2\Client\Provider\Nextcloud;
 use Ramsey\Uuid\Uuid;
 use Bahuma\OAuth2\Client\Provider\NextcloudResourceOwner;
 
 class NextcloudTest extends TestCase
 {
     /**
-     * @var NextcloudProvider
+     * @var Nextcloud
      */
     protected $provider;
 
     protected function setUp(): void
     {
-        $this->provider = new NextcloudProvider([
+        $this->provider = new Nextcloud([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'mock_redirect_uri',
