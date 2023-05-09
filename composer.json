@@ -4,13 +4,28 @@
     "require": {
         "league/oauth2-client": "^2.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "mockery/mockery": "~0.9",
+        "squizlabs/php_codesniffer": "~2.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bahuma\\OAuth2\\Client\\Test\\": "test/src/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
             "name": "Max Bachhuber",
             "email": "max.bachhuber@bahuma.io",
             "homepage": "https://bahuma.io"
-        }
+        },
+        {
+            "name": "Aleix Quintana Alsius",
+            "email": "kinta@communia.org",
+            "homepage": "https://communia.org"
+        }        
     ],
     "autoload": {
         "psr-4": {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Communia\OAuth2\Client\Tests\Provider;
+namespace Bahuma\OAuth2\Client\Tests\Provider;
 
 use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -8,9 +8,9 @@ use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Communia\OAuth2\Client\Provider\DeviantArtProvider;
+use Bahuma\OAuth2\Client\Provider\DeviantArtProvider;
 use Ramsey\Uuid\Uuid;
-use Communia\OAuth2\Client\Provider\DeviantArtResourceOwner;
+use Bahuma\OAuth2\Client\Provider\DeviantArtResourceOwner;
 
 class NextcloudTest extends TestCase
 {
