@@ -8,9 +8,9 @@ use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Bahuma\OAuth2\Client\Provider\DeviantArtProvider;
+use Bahuma\OAuth2\Client\Provider\NextcloudProvider;
 use Ramsey\Uuid\Uuid;
-use Bahuma\OAuth2\Client\Provider\DeviantArtResourceOwner;
+use Bahuma\OAuth2\Client\Provider\NextcloudResourceOwner;
 
 class NextcloudTest extends TestCase
 {
@@ -19,7 +19,7 @@ class NextcloudTest extends TestCase
      */
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new NextcloudProvider([
             'clientId' => 'mock_client_id',
@@ -28,7 +28,7 @@ class NextcloudTest extends TestCase
         ]);
     }
 
-    public function testAuthorizationUrl()
+    public function testAuthorizationUrl(): void
     {
         $url = $this->provider->getAuthorizationUrl();
         $uri = parse_url($url);
@@ -43,7 +43,7 @@ class NextcloudTest extends TestCase
         $this->assertNotNull($this->provider->getState());
     }
 
-    public function testResourceOwnerDetailsUrl()
+    public function testResourceOwnerDetailsUrl(): void
     {
         $token = Mockery::mock(AccessToken::class);
         $url = $this->provider->getResourceOwnerDetailsUrl($token);
@@ -51,7 +51,7 @@ class NextcloudTest extends TestCase
         $this->assertEquals('/api/v1/oauth2/user/whoami', $uri['path']);
     }
 
-    public function testGetAccessToken()
+    public function testGetAccessToken(): void
     {
         $response = Mockery::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token", "token_type":"bearer"}');
@@ -70,7 +70,7 @@ class NextcloudTest extends TestCase
     /**
      * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
      */
-    public function testExceptionThrownWhenErrorObjectReceived()
+    public function testExceptionThrownWhenErrorObjectReceived(): void
     {
         $message = uniqid();
         $status = rand(400, 600);
@@ -84,7 +84,7 @@ class NextcloudTest extends TestCase
         $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    public function testUserData()
+    public function testUserData(): void
     {
         $response_data = [
             'sub' => rand(1000, 9999),
