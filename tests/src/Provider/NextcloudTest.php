@@ -3,9 +3,10 @@
 namespace Bahuma\OAuth2\Client\Tests\Provider;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\Utils;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
-use Mockery;
+use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Bahuma\OAuth2\Client\Provider\Nextcloud;
@@ -21,6 +22,11 @@ class NextcloudTest extends TestCase
 
     protected function setUp(): void
     {
+        $dumpPath = dirname(__FILE__) . '/MockeryDump';
+        m::setLoader(new m\Loader\RequireLoader($dumpPath));
+
+        parent::setUp();
+
         $this->provider = new Nextcloud([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
@@ -45,19 +51,20 @@ class NextcloudTest extends TestCase
 
     public function testResourceOwnerDetailsUrl(): void
     {
-        $token = Mockery::mock(AccessToken::class);
+        $token = m::mock(AccessToken::class);
         $url = $this->provider->getResourceOwnerDetailsUrl($token);
         $uri = parse_url($url);
-        $this->assertEquals('/api/v1/oauth2/user/whoami', $uri['path']);
+        $this->assertEquals('/ocs/v2.php/cloud/user', $uri['path']);
     }
 
     public function testGetAccessToken(): void
     {
-        $response = Mockery::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token", "token_type":"bearer"}');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $body = Utils::streamFor('{"access_token":"mock_access_token", "token_type":"bearer"}');
+        $response->shouldReceive('getBody')->andReturn($body);
         $response->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $response->shouldReceive('getStatusCode')->andReturn(200);
-        $client = Mockery::mock(ClientInterface::class);
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -74,30 +81,40 @@ class NextcloudTest extends TestCase
     {
         $message = uniqid();
         $status = rand(400, 600);
-        $postResponse = Mockery::mock(ResponseInterface::class);
-        $postResponse->shouldReceive('getBody')->andReturn(' {"error":"' . $message . '"}');
+        $postResponse = m::mock(ResponseInterface::class);
+        $body = Utils::streamFor(' {"error":"' . $message . '"}');
+        $postResponse->shouldReceive('getBody')->andReturn($body);
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $postResponse->shouldReceive('getStatusCode')->andReturn($status);
-        $client = Mockery::mock(ClientInterface::class);
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->once()->andReturn($postResponse);
         $this->provider->setHttpClient($client);
+        $this->expectException(IdentityProviderException::class);
         $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
     public function testUserData(): void
     {
         $response_data = [
-            'sub' => rand(1000, 9999),
-            'name' => uniqid(),
-            'email' => uniqid(),
+            'ocs' => [
+                'data' => [
+                    'id' => rand(1000, 9999),
+                    'display-name' => uniqid(),
+                    'email' => uniqid(),
+                    'groups' => [uniqid(), uniqid()],
+                ],
+            ]
         ];
-
         $postResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $postResponse->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token","expires_in":"3600","token_type":"Bearer","scope":"openid email profile","id_token":"mock_token_id"}');
+        // @codingStandardsIgnoreStart
+        $body = Utils::streamFor('{"access_token":"mock_access_token","expires_in":"3600","token_type":"Bearer","scope":"openid email profile","id_token":"mock_token_id"}');
+        // @codingStandardsIgnoreEnd
+        $postResponse->shouldReceive('getBody')->andReturn($body);
         $postResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $postResponse->shouldReceive('getStatusCode')->andReturn(200);
         $userResponse = m::mock('Psr\Http\Message\ResponseInterface');
-        $userResponse->shouldReceive('getBody')->andReturn(json_encode($response_data));
+        $body2 = Utils::streamFor(json_encode($response_data));
+        $userResponse->shouldReceive('getBody')->andReturn($body2);
         $userResponse->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $userResponse->shouldReceive('getStatusCode')->andReturn(200);
         $client = m::mock('GuzzleHttp\ClientInterface');
@@ -107,12 +124,13 @@ class NextcloudTest extends TestCase
         $this->provider->setHttpClient($client);
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $user = $this->provider->getResourceOwner($token);
-
-        $this->assertEquals($response_data['sub'], $user->getId());
-        $this->assertEquals($response_data['sub'], $user->toArray()['sub']);
-        $this->assertEquals($response_data['email'], $user->getEmail());
-        $this->assertEquals($response_data['email'], $user->toArray()['email']);
-        $this->assertEquals($response_data['name'], $user->getName());
-        $this->assertEquals($response_data['name'], $user->toArray()['name']);
+        $this->assertEquals($response_data['ocs']['data']['id'], $user->getId());
+        $this->assertEquals($response_data['ocs']['data']['id'], $user->toArray()['id']);
+        $this->assertEquals($response_data['ocs']['data']['email'], $user->getEmail());
+        $this->assertEquals($response_data['ocs']['data']['email'], $user->toArray()['email']);
+        $this->assertEquals($response_data['ocs']['data']['display-name'], $user->getName());
+        $this->assertEquals($response_data['ocs']['data']['display-name'], $user->toArray()['display-name']);
+        $this->assertEquals($response_data['ocs']['data']['groups'], $user->getGroups());
+        $this->assertEquals($response_data['ocs']['data']['groups'], $user->toArray()['groups']);
     }
 }
