@@ -157,6 +157,7 @@ composer check
 ## Credits
 
 - [Max Bachhuber](https://github.com/bahuma20)
+- [Aleix Quintana Alsius](https://github.com/aleixq) 
 - [All Contributors](https://github.com/bahuma/oauth2-nextcloud/contributors)
 
 
