@@ -7,20 +7,20 @@ on:
 
 jobs:
     run:
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
                 php:
-                    - '7.3'
                     - '7.4'
                     - '8.0'
                     - '8.1'
+                    - '8.2'
                 minimum_versions: [false]
                 coverage: ['none']
                 include:
                     - description: 'Minimum version'
-                      php: '7.3'
+                      php: '7.4'
                       minimum_versions: true
                     - description: 'Log Code Coverage'
                       php: '8.1'
