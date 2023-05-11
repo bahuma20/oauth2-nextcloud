@@ -10,57 +10,56 @@ use Psr\Http\Message\ResponseInterface;
 
 class Nextcloud extends AbstractProvider
 {
-  use BearerAuthorizationTrait;
+    use BearerAuthorizationTrait;
 
   /**
    * @var string Base URL of the nextcloud instance (not including trailing slash).
    */
-  protected $nextcloudUrl = '';
+    protected $nextcloudUrl = '';
 
-  public function getBaseAuthorizationUrl()
-  {
-    return $this->nextcloudUrl . '/index.php/apps/oauth2/authorize';
-  }
-
-  public function getBaseAccessTokenUrl(array $params)
-  {
-    return $this->nextcloudUrl . '/index.php/apps/oauth2/api/v1/token';
-  }
-
-  public function getResourceOwnerDetailsUrl(AccessToken $token)
-  {
-    // index.php is not required on this path
-    return $this->nextcloudUrl . '/ocs/v2.php/cloud/user?format=json';
-  }
-
-  protected function getDefaultScopes()
-  {
-    return [
-
-    ];
-  }
-
-  protected function checkResponse(ResponseInterface $response, $data)
-  {
-    // @codeCoverageIgnoreStart
-    if (empty($data['error'])) {
-      return;
-    }
-    // @codeCoverageIgnoreEnd
-
-    $code = 0;
-    $error = $data['error'];
-
-    if (is_array($error)) {
-      $code = $error['code'];
-      $error = $error['message'];
+    public function getBaseAuthorizationUrl()
+    {
+        return $this->nextcloudUrl . '/index.php/apps/oauth2/authorize';
     }
 
-    throw new IdentityProviderException($error, $code, $data);
-  }
+    public function getBaseAccessTokenUrl(array $params)
+    {
+        return $this->nextcloudUrl . '/index.php/apps/oauth2/api/v1/token';
+    }
 
-  protected function createResourceOwner(array $response, AccessToken $token)
-  {
-    return new NextcloudResourceOwner($response);
-  }
+    public function getResourceOwnerDetailsUrl(AccessToken $token)
+    {
+        return $this->nextcloudUrl . '/ocs/v2.php/cloud/user?format=json';
+    }
+
+    protected function getDefaultScopes()
+    {
+        return [
+
+        ];
+    }
+
+    protected function checkResponse(ResponseInterface $response, $data)
+    {
+      // @codeCoverageIgnoreStart
+        if (empty($data['error'])) {
+            return;
+        }
+      // @codeCoverageIgnoreEnd
+
+        $code = 0;
+        $error = $data['error'];
+
+        if (is_array($error)) {
+            $code = $error['code'];
+            $error = $error['message'];
+        }
+
+        throw new IdentityProviderException($error, $code, $data);
+    }
+
+    protected function createResourceOwner(array $response, AccessToken $token)
+    {
+        return new NextcloudResourceOwner($response);
+    }
 }

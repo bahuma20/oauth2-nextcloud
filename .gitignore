@@ -7,3 +7,6 @@ nbproject/private/
 test/log
 build
 .idea
+coverage.xml
+.phpunit.*.cache
+.phpunit.cache
