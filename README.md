@@ -13,11 +13,7 @@ a patch via pull request.
 
 The following versions of PHP are supported.
 
-* PHP 7.0
-* PHP 7.1
-* PHP 7.2
-* PHP 7.3
-* PHP 7.4
+* From PHP 7.4 to PHP 8.2
 
 To use this package, it will be necessary to have a Nextcloud client ID and client
 secret. These are referred to as `{nextcloud-client-id}` and `{nextcloud-client-secret}`
