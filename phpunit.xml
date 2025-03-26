@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
-  <coverage>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd" cacheResultFile=".phpunit.cache/test-results">
+  <coverage cacheDirectory=".phpunit.cache/code-coverage">
     <report>
       <clover outputFile="coverage.xml"/>
     </report>
+    <include>
+      <directory suffix=".php">src/</directory>
+    </include>
   </coverage>
   <testsuites>
     <testsuite name="default">
@@ -11,9 +14,4 @@
     </testsuite>
   </testsuites>
   <logging/>
-  <source>
-    <include>
-      <directory suffix=".php">src/</directory>
-    </include>
-  </source>
 </phpunit>

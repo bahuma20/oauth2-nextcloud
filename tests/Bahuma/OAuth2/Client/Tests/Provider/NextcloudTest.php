@@ -20,8 +20,8 @@ class NextcloudTest extends TestCase
 
     protected function setUp(): void
     {
-        $dumpPath = dirname(__FILE__) . '/MockeryDump';
-        m::setLoader(new m\Loader\RequireLoader($dumpPath));
+//        $dumpPath = sys_get_temp_dir() . '/MockeryDump';
+//        m::setLoader(new m\Loader\RequireLoader($dumpPath));
 
         parent::setUp();
 
