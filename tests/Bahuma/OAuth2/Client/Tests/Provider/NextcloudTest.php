@@ -10,8 +10,6 @@ use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Bahuma\OAuth2\Client\Provider\Nextcloud;
-use Ramsey\Uuid\Uuid;
-use Bahuma\OAuth2\Client\Provider\NextcloudResourceOwner;
 
 class NextcloudTest extends TestCase
 {
@@ -74,11 +72,9 @@ class NextcloudTest extends TestCase
         $this->assertNull($token->getResourceOwnerId());
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     */
     public function testExceptionThrownWhenErrorObjectReceived(): void
     {
+        $this->expectException(IdentityProviderException::class);
         $message = uniqid();
         $status = rand(400, 600);
         $postResponse = m::mock(ResponseInterface::class);
